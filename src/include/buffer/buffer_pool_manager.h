@@ -152,6 +152,24 @@ class BufferPoolManager {
    */
   void FlushAllPagesImpl();
 
+  /**
+   * Allocate a page on disk.∂
+   * @return the id of the allocated page
+   */
+  page_id_t AllocatePage();
+
+  /**
+   * Deallocate a page on disk.
+   * @param page_id id of the page to deallocate
+   */
+  void DeallocatePage(__attribute__((unused)) page_id_t page_id) {
+    // This is a no-nop right now without a more complex data structure to track deallocated pages
+  }
+
+  Page *InitNewPage(page_id_t page_id);
+
+  std::atomic<page_id_t> next_page_id_ = 0;
+
   /** Number of pages in the buffer pool. */
   size_t pool_size_;
   /** Array of buffer pool pages. */
