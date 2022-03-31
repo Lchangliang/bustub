@@ -160,7 +160,7 @@ void BufferPoolManager::FlushAllPagesImpl() {
   }
 }
 
-Page *BufferPoolManagerInstance::InitNewPage(page_id_t page_id) {
+Page *BufferPoolManager::InitNewPage(page_id_t page_id) {
   frame_id_t frame_id;
   if (!free_list_.empty()) {
     frame_id = *free_list_.begin();
@@ -181,8 +181,6 @@ Page *BufferPoolManagerInstance::InitNewPage(page_id_t page_id) {
   return page;
 }
 
-page_id_t BufferPoolManagerInstance::AllocatePage() {
-  return next_page_id_++;;
-}
+page_id_t BufferPoolManager::AllocatePage() { return next_page_id_++; }
 
 }  // namespace bustub

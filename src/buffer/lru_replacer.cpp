@@ -11,6 +11,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "buffer/lru_replacer.h"
+#include "common/macros.h"
 
 namespace bustub {
 

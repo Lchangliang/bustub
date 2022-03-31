@@ -23,6 +23,11 @@ namespace bustub {
 
 #define BPLUSTREE_TYPE BPlusTree<KeyType, ValueType, KeyComparator>
 
+enum OpType {
+  READ,
+  INSERT,
+  DELETE
+};
 /**
  * Main class providing the API for the Interactive B+ Tree.
  *
@@ -79,7 +84,13 @@ class BPlusTree {
   // expose for test purpose
   Page *FindLeafPage(const KeyType &key, bool leftMost = false);
 
+  Page *FindLeafPageWithLock(const KeyType &key, enum OpType op, Transaction *transaction, bool left_most = false);
+
  private:
+  void ReleaseAndUnpin(enum OpType op, Transaction *transaction);
+
+  bool IsSafe(BPlusTreePage* bptp, enum OpType op);
+
   void StartNewTree(const KeyType &key, const ValueType &value);
 
   bool InsertIntoLeaf(const KeyType &key, const ValueType &value, Transaction *transaction = nullptr);
@@ -98,6 +109,9 @@ class BPlusTree {
                 int index, Transaction *transaction = nullptr);
 
   template <typename N>
+  bool IsCoalesce(N* lhs, N* rhs);
+
+  template <typename N>
   void Redistribute(N *neighbor_node, N *node, int index);
 
   bool AdjustRoot(BPlusTreePage *node);
@@ -109,8 +123,11 @@ class BPlusTree {
 
   void ToString(BPlusTreePage *page, BufferPoolManager *bpm) const;
 
+  void InitBPlusTreePage(IndexPageType page_type, BPlusTreePage *bptp, page_id_t parent_page_id = INVALID_PAGE_ID);
+
   // member variable
   std::string index_name_;
+  page_id_t guard_page_id = 0;
   page_id_t root_page_id_;
   BufferPoolManager *buffer_pool_manager_;
   KeyComparator comparator_;
